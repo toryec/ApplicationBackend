@@ -134,4 +134,14 @@ public class UserDAL : BaseDal, IUserDAL
         var result = await DbConnection.ExecuteAsync(command);
         return result > 0;
     }
+
+    public Task<UserType> GetUserTypeAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<IEnumerable<Role>> GetRoleAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
 }
