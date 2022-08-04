@@ -24,7 +24,7 @@ public class UnitOfWork: IUnitOfWork
         this.configuration = configuration;
         this.dalFactory = dalFactory;
         //Don't forget to add connection string
-        dbConnection = new SqliteConnection(configuration.GetConnectionString("")); 
+        dbConnection = new SqliteConnection(configuration.GetConnectionString("sqliteconnetion")); 
     }
 
     public void BeginTransaction()
