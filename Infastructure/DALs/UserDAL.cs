@@ -135,6 +135,11 @@ public class UserDAL : BaseDal, IUserDAL
         return result > 0;
     }
 
+    public Task<UserDetail> GetUserDetailAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
     public Task<UserType> GetUserTypeAsync(Guid id, CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
@@ -144,4 +149,6 @@ public class UserDAL : BaseDal, IUserDAL
     {
         throw new NotImplementedException();
     }
+
+   
 }

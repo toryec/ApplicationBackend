@@ -15,11 +15,13 @@ public interface IUserDAL : IBaseDal
     Task<bool> UpdateUserAsync(User user, CancellationToken cancellationToken = default);
     Task<bool> DeleteUserAsync(Guid id, CancellationToken cancellationToken = default);
     Task<bool> CheckIfExistsAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<UserDetail> GetUserDetailAsync(Guid id, CancellationToken cancellationToken = default);
     Task<bool> InsertUserDetailAsync(UserDetail userDetail, CancellationToken cancellationToken = default);
     Task<bool> UpdateUserDetailAsync(UserDetail userDetail, CancellationToken cancellationToken = default);
-    Task<bool> InsertUserTypeAsync(UserType userType, CancellationToken cancellationToken = default);
     Task<UserType> GetUserTypeAsync(Guid id, CancellationToken cancellationToken = default);
-    Task<bool> InsertRoleAsync(IEnumerable<Role> roles, CancellationToken cancellationToken = default);
+    Task<bool> InsertUserTypeAsync(UserType userType, CancellationToken cancellationToken = default);
     Task<IEnumerable<Role>> GetRoleAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<bool> InsertRoleAsync(IEnumerable<Role> roles, CancellationToken cancellationToken = default);
+    
 
 }
