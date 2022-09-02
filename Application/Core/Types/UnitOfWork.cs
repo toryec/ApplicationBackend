@@ -34,6 +34,7 @@ public class UnitOfWork: IUnitOfWork
 
     public async Task BeginTransactionAsync(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted, CancellationToken cancellationToken = default)
     {
+        await dbConnection.OpenAsync(cancellationToken);
         dbtransaction = await dbConnection.BeginTransactionAsync(isolationLevel, cancellationToken);
     }
 

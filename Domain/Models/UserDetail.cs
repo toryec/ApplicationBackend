@@ -8,16 +8,12 @@ namespace Domain.Models
 {
     public class UserDetail
     {
-        [Key]
         public Guid UserId { get; set; }
 
-        [Required]
         public string FirstName { get; set; } = default!;
 
-        [Required]
         public string LastName { get; set; } = default!;
 
-        [Required]
         public int Age { get; set; }
     }
 }

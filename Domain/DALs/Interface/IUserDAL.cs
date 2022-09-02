@@ -9,8 +9,8 @@ using Domain.Models;
 namespace Domain.DALs.Interface;
 public interface IUserDAL : IBaseDal
 {
-    Task<IEnumerable<User>> GetUsersAsync(CancellationToken cancellationToken = default);
-    Task<User> GetUserByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<IEnumerable<User>> GetUsersAsync(string? userName = null, CancellationToken cancellationToken = default);
+    Task<User> GetUserAsync(Guid id, CancellationToken cancellationToken = default);
     Task<bool> CreateUserAsync(User user, CancellationToken cancellationToken = default);
     Task<bool> UpdateUserAsync(User user, CancellationToken cancellationToken = default);
     Task<bool> DeleteUserAsync(Guid id, CancellationToken cancellationToken = default);
@@ -18,10 +18,8 @@ public interface IUserDAL : IBaseDal
     Task<UserDetail> GetUserDetailAsync(Guid id, CancellationToken cancellationToken = default);
     Task<bool> InsertUserDetailAsync(UserDetail userDetail, CancellationToken cancellationToken = default);
     Task<bool> UpdateUserDetailAsync(UserDetail userDetail, CancellationToken cancellationToken = default);
-    Task<UserType> GetUserTypeAsync(Guid id, CancellationToken cancellationToken = default);
-    Task<bool> InsertUserTypeAsync(UserType userType, CancellationToken cancellationToken = default);
-    Task<IEnumerable<Role>> GetRoleAsync(Guid id, CancellationToken cancellationToken = default);
-    Task<bool> InsertRoleAsync(IEnumerable<Role> roles, CancellationToken cancellationToken = default);
-    
-
+    Task<IEnumerable<UserRole>> GetRoleAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<bool> InsertRoleAsync(IEnumerable<UserRole> userRoles, CancellationToken cancellationToken = default);
+    Task<User> GetByUserName(string userName, CancellationToken cancellationToken = default);
+    Task<bool> CheckUserNameExistsAsync(string userName, CancellationToken cancellationToken = default);
 }

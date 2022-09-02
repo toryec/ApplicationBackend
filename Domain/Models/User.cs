@@ -8,20 +8,12 @@ using System.Threading.Tasks;
 namespace Domain.Models;
 public class User
 {
-    [Key]
-    public Guid Id { get; set; } 
-    [Required]
-    public string UserName { get; set; } = default!;
-    [Required]
-    public string Password { get; set; } = default!;
- 
-    public IEnumerable<Role>? Roles { get; set; }
 
-    //[Required]
-    //public byte[] Salt { get; set; } = default!;
+    public Guid Id { get; set; }
+    public string UserName { get; set; } = default!;
+    public string Password { get; set; } = default!;
+    public IEnumerable<UserRole>? UserRoles { get; set; }
     public UserDetail? UserDetail { get; set; }
 
-    public UserType UserType { get; set; }
-    
 
 }

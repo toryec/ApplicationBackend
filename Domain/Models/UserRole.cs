@@ -6,10 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Domain.Models;
-public class Role
+public class UserRole
 {
-    [Key]
-    public Guid Id { get; set; }
-    [Required]
+    public Guid UserId { get; set; }
+    public int RoleId { get; set; }
     public string RoleCode { get; set; } = default!;
 }

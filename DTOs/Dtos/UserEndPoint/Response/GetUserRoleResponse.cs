@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Domain.Models;
 
-namespace DTOs.Dtos.CreateRequestDtos;
-[AutoMap(typeof(Role), ReverseMap = true)]
-public class CreateRoleRequestDto
+namespace DTOs.Dtos.UserEndPoint.Response;
+
+[AutoMap(typeof(UserRole))]
+public class GetUserRoleResponse
 {
-    [Required]
+    public Guid UserId { get; set; }
+    public int RoleId { get; set; }
     public string RoleCode { get; set; } = default!;
 }

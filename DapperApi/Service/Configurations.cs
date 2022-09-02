@@ -7,6 +7,10 @@ using Dapper;
 using Infastructure.Core.Types;
 using Infastructure.Types;
 using DTOs.Core.Interface;
+using Microsoft.AspNetCore.Identity;
+using Domain.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 namespace DapperApi.Service;
 
@@ -18,7 +22,10 @@ public static class Configurations
             .AddScoped((sp) => GetDALFactory(sp)) //AddSinglton(GetDALFactory);
             .AddScoped<IUnitOfWorkFactory, UnitOfWorkFactory>()
             .AddTransient<UnitOfWork>()
-            .AddScoped<IUserService, UserService>();
+            .AddScoped<IUserService, UserService>()
+            .AddScoped<IAuthenticationManager, AuthenticationManager>()
+            .AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
+           // 
         AddTypes();
         //services
         //    .RegisterHandler<Guid, GuidTypeHandler>()
@@ -63,11 +70,37 @@ public static class Configurations
 
         return services;
     }
-    //public static IServiceCollection RegisterHandler<TType, THandler>(this IServiceCollection services)
-    //    where THandler : SqlMapper.TypeHandler<TType>, new()
-    //{
-    //    SqlMapper.AddTypeHandler(new THandler());
+   
+    // IMPORTANT Add Audience and Issuer
+    public static IServiceCollection AddTokenValidator(this IServiceCollection services, IConfiguration configuration)
+    {
+        var tokenKey = configuration["AppSettings:TokenKey"]; //configuration.GetValue<string>("TokenKey"); //configuration["TokenKey"];
+        var key = Convert.FromBase64String(tokenKey);
 
-    //    return services;
-    //}
+        services
+            .AddScoped<ApiJwtBearerEvents>()
+            .AddAuthentication(x =>
+            {
+                x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(x =>
+            {
+                //x.Audience = "vetting-app";
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.EventsType = typeof(ApiJwtBearerEvents); // For Debugging the token; finding out what happen when we validate with a token
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
+
+
+        return services;
+    }
 }

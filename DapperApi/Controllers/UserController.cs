@@ -2,12 +2,13 @@
 using Application.Services.Interfaces;
 using AutoMapper;
 using Domain.Models;
-using DTOs.Dtos.CreateRequestDtos;
-using DTOs.Dtos.GetResponseDtos;
+using DTOs.Dtos.UserEndPoint.Request;
+using DTOs.Dtos.UserEndPoint.Response;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DapperApi.Controllers;
-
+//[Authorize(Roles = "User")]
 [ApiController]
 [Route("api/[controller]")]
 public class UserController : ControllerBase
@@ -22,46 +23,30 @@ public class UserController : ControllerBase
         this.mapper = mapper;
     }
 
-   [HttpGet]
-   public async Task<IActionResult> GetUsersAsync(CancellationToken cancellationToken = default)
-   {
-       var model = await userService.GetUsersAsync(cancellationToken);
+    [Authorize(Roles = "Admin")]
+    [HttpGet]
+    public async Task<IActionResult> GetUsersAsync([FromQuery] GetUsersRequestFilter filter, CancellationToken cancellationToken = default)
+    {
+       var model = await userService.GetUsersAsync(filter.UserName, cancellationToken);
        if(model is null)
        {
            return NotFound();
        }
-       return Ok(mapper.Map<IEnumerable<GetUserResponseDto>>(model));
-   }
+       return Ok(mapper.Map<IEnumerable<GetUsersResponse>>(model));
+    }
 
+    [ActionName(nameof(GetUserAsync))]
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetUserByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> GetUserAsync(Guid id, [FromQuery] GetUserRequestFilter filter, CancellationToken cancellationToken = default)
     {
-        var model = await userService.GetUserByIdAsync(id, cancellationToken);
+        var model = await userService.GetUserAsync(id, filter.IncludeRoles, filter.IncludeDetails, cancellationToken);
 
         if(model is null)
         {
             return NotFound();
         }
-        return Ok(mapper.Map<GetUserResponseDto>(model));
+        return Ok(mapper.Map<GetUserResponse>(model));
     }
-
-    [HttpPost]
-    public async Task<IActionResult> CreateUserAsync([FromBody] CreateUserRequestDto newUser, CancellationToken cancellationToken = default)
-    {
-        var userModel = mapper.Map<User>(newUser);
-
-        var result = await userService.CreateUserAsync(userModel, cancellationToken);
-        if(result)
-        {
-            var userResponse = mapper.Map<GetUserResponseDto>(userModel);
-            userResponse.Roles = mapper.Map<IEnumerable<GetRoleResponseDto>>(userModel.Roles);
-            //userResponse.UserDetail = mapper.Map<GetUserDetailResponseDto>(userModel.UserDetail);
-           // userResponse.UserType = userModel.UserType;
-            return Ok(userResponse);
-        }
-        return BadRequest();
-    }
-
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteUserAsync(Guid id, CancellationToken cancellationToken = default)
@@ -78,7 +63,7 @@ public class UserController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateUserAsync(
         [Required] Guid id,
-        [FromBody, Required] CreateUserRequestDto updatedUser, 
+        [FromBody, Required] CreateUserRequest updatedUser, 
         CancellationToken cancellationToken = default)
     {
         var exists = await userService.CheckIfExistsAsync(id, cancellationToken);
@@ -90,5 +75,4 @@ public class UserController : ControllerBase
         }
         return BadRequest();
     }
-
 }

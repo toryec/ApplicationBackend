@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Domain.Models;
 
-namespace DTOs.Dtos.GetResponseDtos;
-[AutoMap(typeof(Role))]
-public class GetRoleResponseDto
+namespace DTOs.Dtos.UserEndPoint.Response;
+
+[AutoMap(typeof(User))]
+public class GetUsersResponse
 {
-    
     public Guid Id { get; set; }
-    public string RoleCode { get; set; } = default!;
+    public string UserName { get; set; } = default!;
+
 }

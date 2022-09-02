@@ -1,22 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Domain.Models;
 
-namespace DTOs.Dtos.CreateRequestDtos;
+namespace DTOs.Dtos.UserEndPoint.Request;
+
 [AutoMap(typeof(UserDetail), ReverseMap = true)]
-public class CreateUserDetailRequestDto
+public class CreateUserDetailRequest
 {
-    [Required]
     public string FirstName { get; set; } = default!;
-
-    [Required]
     public string LastName { get; set; } = default!;
-
-    [Required]
     public int Age { get; set; }
 }
