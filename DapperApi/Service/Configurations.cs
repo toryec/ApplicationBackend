@@ -21,7 +21,7 @@ public static class Configurations
         services
             .AddScoped((sp) => GetDALFactory(sp)) //AddSinglton(GetDALFactory);
             .AddScoped<IUnitOfWorkFactory, UnitOfWorkFactory>()
-            .AddTransient<UnitOfWork>()
+            .AddTransient<IUnitOfWork, UnitOfWork>()
             .AddScoped<IUserService, UserService>()
             .AddScoped<IAuthenticationManager, AuthenticationManager>()
             .AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
@@ -53,9 +53,10 @@ public static class Configurations
         return dalFactory;
     }
 
-    private static void AddTypes()
+    internal static void AddTypes()
     {
         SqlMapper.AddTypeHandler(new GuidTypeHandler());
+        //SqlMapper.ThrowDataException
         
     }
 

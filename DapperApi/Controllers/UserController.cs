@@ -23,7 +23,7 @@ public class UserController : ControllerBase
         this.mapper = mapper;
     }
 
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     [HttpGet]
     public async Task<IActionResult> GetUsersAsync([FromQuery] GetUsersRequestFilter filter, CancellationToken cancellationToken = default)
     {

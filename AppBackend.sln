@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DTOs", "DTOs\DTOs.csproj", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4. DTOs", "4. DTOs", "{9870557D-911B-4A84-AEE1-A93EFEFAB5CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppBackendTest", "AppBackendTest\AppBackendTest.csproj", "{15ED21C1-0B79-438C-BF8B-673076BEC8E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppBackendTest", "AppBackendTest\AppBackendTest.csproj", "{15ED21C1-0B79-438C-BF8B-673076BEC8E6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "6. AppBackend.UnitTest", "6. AppBackend.UnitTest", "{E2B2E9DB-28DC-4FB3-B1E7-E9F6498193F5}"
 EndProject

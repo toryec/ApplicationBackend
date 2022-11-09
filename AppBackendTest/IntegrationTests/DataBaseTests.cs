@@ -1,31 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Common;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Application.Core.Interfaces;
-using Application.Core.Types;
-using Domain.DALs.Interface;
-using Domain.Models;
+﻿using System.Data.Common;
 using Microsoft.Data.Sqlite;
-using Microsoft.Extensions.Configuration;
-using Moq;
 
 namespace AppBackendTest.IntegrationTests;
 
 [TestFixture]
 public class DataBaseTests
 {
-    private IConfiguration _configuration = default!;
     private DbConnection dbConnection = default!;
 
     [OneTimeSetUp]
     public void Setup()
-    {   
-        dbConnection = new SqliteConnection(_configuration.GetConnectionString("sqliteinmemory"));
+    {
+        dbConnection = new SqliteConnection("Data Source=InMemorySample;Mode=Memory;Cache=Shared");
         CreateTable();
     }
 
@@ -43,32 +29,30 @@ public class DataBaseTests
         var insertCommand = dbConnection.CreateCommand();
         insertCommand.CommandText =
            @"
-                INSERT INTO User (Id, UserName, Age, Password) 
-                VALUES 
+                INSERT INTO User (Id, UserName, Age, Password)
+                VALUES
                     ('187f0684-d1aa-4b57-87d6-a4d462e98eaf', 'JohnDoe', 20, '124567'),
                     ('d0700f0f-f653-4b48-9e5b-dfb92bba090d', 'JaneDoe', 21, '67788')
             ";
 
         //Act
 
-        await dbConnection.OpenAsync();
         var actualResult = await insertCommand.ExecuteNonQueryAsync();
-        //await dbConnection.CloseAsync();
+
         //Assert
 
         Assert.That(actualResult, Is.GreaterThan(0));
         //Assert.Greater(actualResult, 0);
     }
 
-
     [Test]
     public async Task GetUserCount_CountsRecordsInUserTable_ReturnsUsersCount()
     {
-        //Arrange 
+        //Arrange
         var selectCommand = dbConnection.CreateCommand();
         selectCommand.CommandText =
            @"
-                SELECT COUNT (*) FROM User 
+                SELECT COUNT (*) FROM User
             ";
 
         //Act
@@ -79,23 +63,20 @@ public class DataBaseTests
         //Assert
         var result = Convert.ToInt32(actualResult);
         Assert.That(result, Is.GreaterThan(0));
-
     }
-
 
     [Test]
     public async Task GetUser_SelectsUserInUserTable_ReturnsUser()
     {
-        //Arrange 
+        //Arrange
         var actualResult = new List<UserModel>();
         var selectCommand = dbConnection.CreateCommand();
         selectCommand.CommandText =
            @"
                 SELECT Id, UserName, Age
                 FROM User
-                WHERE Id = '7dbe1299-779c-417a-92fb-b02f62f1cf1e'      
+                WHERE Id = '7dbe1299-779c-417a-92fb-b02f62f1cf1e'
            ";
-
 
         //Act
         await dbConnection.OpenAsync();
@@ -104,35 +85,33 @@ public class DataBaseTests
 
         while (await reader.ReadAsync())
         {
-            actualResult.Add(new UserModel{ Id = reader.GetString(0),UserName = reader.GetString(1),Age = reader.GetInt32(2)});
+            actualResult.Add(new UserModel { Id = reader.GetString(0), UserName = reader.GetString(1), Age = reader.GetInt32(2) });
         }
         await reader.CloseAsync();
         //await dbConnection.CloseAsync();
-        
+
         //Assert
         Assert.That(actualResult.Count, Is.EqualTo(1));
         //Assert.That(actualResult.Any(), Is.True);
     }
 
-
     [Test]
     public async Task GetUsers_SelectsAllUsersInUserTable_ReturnsUsers()
     {
-        //Arrange 
+        //Arrange
         var actualResult = new List<UserModel>();
         var selectCommand = dbConnection.CreateCommand();
         selectCommand.CommandText =
            @"
                 SELECT Id, UserName, Age
-                FROM User 
+                FROM User
             ";
-
 
         //Act
         await dbConnection.OpenAsync();
-        
+
         var reader = await selectCommand.ExecuteReaderAsync();
-        while(await reader.ReadAsync())
+        while (await reader.ReadAsync())
         {
             actualResult.Add(new UserModel { Id = reader.GetString(0), UserName = reader.GetString(1), Age = reader.GetInt32(2) });
         }
@@ -151,24 +130,20 @@ public class DataBaseTests
 
         var updateCommand = dbConnection.CreateCommand();
 
-        // updateCommand.CreateParameter("@",);
         updateCommand.CommandText =
             @"
                 UPDATE User
                 SET Age = 28
                 WHERE
-                Id = '91fcb60d-a6b3-46e0-8fa0-decd4ec31197'  
+                Id = '91fcb60d-a6b3-46e0-8fa0-decd4ec31197'
             ";
 
         //Act
         await dbConnection.OpenAsync();
         var actualResult = await updateCommand.ExecuteNonQueryAsync();
-        //await dbConnection.CloseAsync();
 
         //Assert
         Assert.That(actualResult, Is.GreaterThan(0));
-
-
     }
 
     [Test]
@@ -190,10 +165,7 @@ public class DataBaseTests
 
         //Assert
         Assert.That(actualResult, Is.GreaterThan(0));
-
-
     }
-
 
     private void CreateTable()
     {
@@ -206,7 +178,7 @@ public class DataBaseTests
                     UserName TEXT,
                     Age INTEGER,
                     Password TEXT
-                )            
+                )
             ";
 
         command.ExecuteNonQuery();
@@ -215,8 +187,8 @@ public class DataBaseTests
 
         insertCommand.CommandText =
            @"
-                INSERT INTO User (Id, UserName, Age, Password) 
-                VALUES 
+                INSERT INTO User (Id, UserName, Age, Password)
+                VALUES
                    ('a6f20286-8f83-47ae-992e-deae16c7d83c', 'DoeJohn', 26, '114597'),
                    ('91fcb60d-a6b3-46e0-8fa0-decd4ec31197', 'DoeJane', 29, '52299'),
                    ('7dbe1299-779c-417a-92fb-b02f62f1cf1e', 'MikeSmith', 28, '784359')
@@ -225,7 +197,4 @@ public class DataBaseTests
 
         insertCommand.ExecuteNonQuery();
     }
-
-
-
 }

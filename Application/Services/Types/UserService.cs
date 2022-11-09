@@ -65,11 +65,12 @@ public class UserService : IUserService
             return false;
         }
 
-        user.UserRoles = new List<UserRole> 
+        // Set the userRole Manually
+        user.UserRoles = new List<UserRole>
         {
             new UserRole{UserId = user.Id, RoleId = 3}
         };
-       
+
         result = await userDAL.InsertRoleAsync(user.UserRoles, cancellationToken);
 
         //if(user.UserRoles?.Any() == true)

@@ -17,6 +17,6 @@ public class UnitOfWorkFactory : IUnitOfWorkFactory
     }
     public IUnitOfWork GetUnitOfWork()
     {
-        return serviceProvider.GetRequiredService<UnitOfWork>();
+        return serviceProvider.GetRequiredService<IUnitOfWork>();
     }
 }

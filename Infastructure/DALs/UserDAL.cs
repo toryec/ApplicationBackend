@@ -64,16 +64,16 @@ public class UserDAL : BaseDal, IUserDAL
 
         var template = builder.AddTemplate(sql);
         var command = new CommandDefinition(template.RawSql, template.Parameters, cancellationToken: cancellationToken);
-
-        return await DbConnection.QueryAsync<User>(command);
+        var result = await DbConnection.QueryAsync<User>(command);
+        return result;
     }
 
     // GET USER
     public async Task<User> GetUserAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        const string sql = "SELECT Id, UserName FROM User WHERE UPPER(Id) = UPPER(@Id)";
+        const string sql = "SELECT Id, UserName FROM User WHERE Id = UPPER(@Id)";
 
-        var command = new CommandDefinition(sql, new { Id = id }, cancellationToken: cancellationToken);
+        var command = new CommandDefinition(sql, new { Id = id.ToString() }, cancellationToken: cancellationToken);
  
         return await DbConnection.QuerySingleOrDefaultAsync<User>(command);
 
@@ -82,7 +82,7 @@ public class UserDAL : BaseDal, IUserDAL
     // UPDATE USER
     public async Task<bool> UpdateUserAsync(User user, CancellationToken cancellationToken = default)
     {
-        const string sql = "UPDATE User SET UserName = @UserName, Password = @Password  WHERE UPPER(Id) = UPPER(@Id)";
+        const string sql = "UPDATE User SET UserName = @UserName, Password = @Password  WHERE Id = UPPER(@Id)";
 
         var command = new CommandDefinition(sql, user, cancellationToken: cancellationToken);
         var result = await DbConnection.ExecuteAsync(command); 
@@ -136,7 +136,7 @@ public class UserDAL : BaseDal, IUserDAL
         const string sql = @"
             SELECT x.*, (SELECT RoleCode FROM Role WHERE Id = x.RoleId) RoleCode 
             FROM UserRole x 
-            WHERE Id = UPPER(@Id)";
+            WHERE UserId = UPPER(@Id)";
 
         var command = new CommandDefinition(sql, new { Id = id }, cancellationToken: cancellationToken);
         return await DbConnection.QueryAsync<UserRole>(command);
