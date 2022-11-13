@@ -93,6 +93,20 @@ public class UserDALTests
     }
 
     [Test]
+    public async Task GetPaginatedUsersAsync_PagedUsersReturned_ReturnsTaskOfPaginatedListOfUser()
+    {
+        //Arrange
+        var expectedPageIndex = 1;
+        var expectedPageSize = 3;
+
+        //Act
+        var actualResult = await sut.GetPaginatedUsersAsync(expectedPageIndex, expectedPageSize, CancellationToken.None);
+
+        //Assert
+        Assert.That(actualResult.Count, Is.EqualTo(3));
+    }
+
+    [Test]
     public async Task GetUserAsync_UserReturned_ReturnsTaskOfUser()
     {
         //Arrange

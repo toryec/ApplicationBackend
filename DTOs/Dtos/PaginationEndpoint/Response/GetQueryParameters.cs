@@ -1,0 +1,24 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DTOs.Dtos.PaginationEndpoint.Response;
+public class GetQueryParameters
+{
+    const int maxPageSize = 50;
+    private int _pageSize = 5;
+    public int PageIndex { get; set; } = 1;
+    public int PageSize
+    {
+        get
+        {
+            return _pageSize;
+        }
+        set
+        {
+            _pageSize = value > maxPageSize ? maxPageSize : value;
+        }
+    }
+}

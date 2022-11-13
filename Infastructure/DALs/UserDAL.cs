@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dapper;
+using Domain.Core.Types;
 using Domain.DALs;
 using Domain.DALs.Interface;
 using Domain.Models;
@@ -46,14 +47,6 @@ public class UserDAL : BaseDal, IUserDAL
     //GET ALL USERS
     public async Task<IEnumerable<User>> GetUsersAsync(string? userName = null, CancellationToken cancellationToken = default)
     {
-        //const string sql = "SELECT * FROM Users";
-
-        //var command = new CommandDefinition(sql, cancellationToken: cancellationToken);
-
-        //return await DbConnection.QueryAsync<User>(command);
-
-        //var ss = "SELECT Id, UserName FROM User Where UserName LIKE %test% COLLATE NOCASE";
-
         const string sql = "SELECT Id, UserName FROM User /**where**/";
         var builder = new SqlBuilder();
 
@@ -66,6 +59,19 @@ public class UserDAL : BaseDal, IUserDAL
         var command = new CommandDefinition(template.RawSql, template.Parameters, cancellationToken: cancellationToken);
         var result = await DbConnection.QueryAsync<User>(command);
         return result;
+
+
+    }
+
+    // GET PAGED USERS
+    public async Task<PaginatedList<User>> GetPaginatedUsersAsync(int pageIndex, int pageSize, CancellationToken cancellationToken = default)
+    {
+        const string sql = "SELECT Id, UserName FROM User";
+
+        var command = new CommandDefinition(sql, cancellationToken: cancellationToken);
+
+        var result =  await DbConnection.QueryAsync<User>(command);
+        return PaginatedList<User>.ToPaginatedList(result, pageIndex, pageSize);
     }
 
     // GET USER
@@ -166,4 +172,6 @@ public class UserDAL : BaseDal, IUserDAL
         var result = await DbConnection.ExecuteScalarAsync<int>(command);
         return result > 0;
     }
+
+   
 }

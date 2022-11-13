@@ -12,7 +12,6 @@ public class GuidTypeHandler : SqlMapper.TypeHandler<Guid>
     // Handles how data is De-serialized into the object
     public override Guid Parse(object value)
     {
-        //return new Guid((string)value);
         _ = Guid.TryParse(value.ToString(), out Guid result);
         return result;
     }

@@ -4,12 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Domain.Core.Interfaces;
+using Domain.Core.Types;
 using Domain.Models;
 
 namespace Domain.DALs.Interface;
 public interface IUserDAL : IBaseDal
 {
     Task<IEnumerable<User>> GetUsersAsync(string? userName = null, CancellationToken cancellationToken = default);
+    Task<PaginatedList<User>> GetPaginatedUsersAsync( int pageIndex , int pageSize, CancellationToken cancellationToken = default);
     Task<User> GetUserAsync(Guid id, CancellationToken cancellationToken = default);
     Task<bool> CreateUserAsync(User user, CancellationToken cancellationToken = default);
     Task<bool> UpdateUserAsync(User user, CancellationToken cancellationToken = default);

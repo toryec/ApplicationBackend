@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Application.Core.Interfaces;
 using Application.Services.Interfaces;
 using Domain.Core.Interfaces;
+using Domain.Core.Types;
 using Domain.DALs.Interface;
 using Domain.Models;
 using Microsoft.AspNetCore.Identity;
@@ -125,6 +126,14 @@ public class UserService : IUserService
         var userDAL = unitOfWork.GetDAL<IUserDAL>();
         return await userDAL.GetUsersAsync(userName, cancellationToken: cancellationToken);
     }
+
+    public async Task<PaginatedList<User>> GetPaginatedUsersAsync(int pageIndex, int pageSize, CancellationToken cancellationToken = default)
+    {
+        using var unitOfWork = unitOfWorkFactory.GetUnitOfWork();
+        var userDAL = unitOfWork.GetDAL<IUserDAL>();
+        return await userDAL.GetPaginatedUsersAsync(pageIndex, pageSize, cancellationToken: cancellationToken);
+    }
+
 
     //Optional Update for UserDetails
     public async Task<bool> UpdateUserAsync(Guid id, User user, CancellationToken cancellationToken = default)

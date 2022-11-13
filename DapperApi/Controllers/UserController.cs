@@ -2,12 +2,15 @@
 using Application.Services.Interfaces;
 using AutoMapper;
 using Domain.Models;
+using DTOs.Dtos.PaginationEndpoint.Response;
 using DTOs.Dtos.UserEndPoint.Request;
 using DTOs.Dtos.UserEndPoint.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace DapperApi.Controllers;
+
 //[Authorize(Roles = "User")]
 [ApiController]
 [Route("api/[controller]")]
@@ -34,6 +37,29 @@ public class UserController : ControllerBase
        }
        return Ok(mapper.Map<IEnumerable<GetUsersResponse>>(model));
     }
+
+    [HttpGet("pagedResponse")]
+    public async Task<IActionResult> GetPaginatedUsersAsync([FromQuery] GetQueryParameters parameters, CancellationToken cancellationToken = default)
+    {
+        var model = await userService.GetPaginatedUsersAsync(parameters.PageIndex, parameters.PageSize, cancellationToken);
+        if(model is null)
+        {
+            return NotFound();
+        }
+
+        var metadata = new
+        {
+            model.PageIndex,
+            model.PageSize,
+            model.TotalCount,
+            model.TotalPages,
+            model.HasNextPage,
+            model.HasPreviousPage
+        };
+        Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+        return Ok(mapper.Map<IEnumerable<GetUserResponse>>(model));
+    }
+
 
     [ActionName(nameof(GetUserAsync))]
     [HttpGet("{id}")]

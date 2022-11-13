@@ -1,5 +1,6 @@
 ﻿using Application.Core.Interfaces;
 using Application.Services.Types;
+using Domain.Core.Types;
 using Domain.DALs.Interface;
 using Domain.Models;
 using Microsoft.AspNetCore.Identity;
@@ -7,6 +8,7 @@ using Moq;
 
 namespace AppBackendTest.UnitTests;
 
+[TestFixture]
 public class UserServiceTests
 {
     private Mock<IPasswordHasher<User>> passwordHasherMock = default!;
@@ -179,6 +181,37 @@ public class UserServiceTests
     }
 
     [Test]
+    public async Task GetPaginatedUsersAsync_PagedUsersReturned_ReturnsTaskOfPaginatedListOfUser()
+    {
+        //Arrange
+        int expectedPageIndex = 1;
+        var expectedPageSize = 10;
+
+        IEnumerable<User> expectedInput = new List<User>
+        {
+            new User(),
+            new User(),
+            new User()
+        };
+
+        PaginatedList<User> expectedResult = PaginatedList<User>.ToPaginatedList(expectedInput, expectedPageIndex, expectedPageSize);
+
+        var userDALMock = new Mock<IUserDAL>();
+        userDALMock.Setup(x => x.GetPaginatedUsersAsync(It.IsAny<Int32>(), It.IsAny<Int32>(), CancellationToken.None)).ReturnsAsync(expectedResult);
+
+        unitOfWorkMock.Setup(u => u.GetDAL<IUserDAL>()).Returns(userDALMock.Object);
+
+        unitOfWorkFactoryMock.Setup(f => f.GetUnitOfWork())
+          .Returns(unitOfWorkMock.Object);
+
+        //Act
+        var actualResult = await userService.GetPaginatedUsersAsync(expectedPageIndex, expectedPageSize, CancellationToken.None);
+
+        //Assert
+        Assert.That(actualResult, Is.EqualTo(expectedResult));
+    }
+
+    [Test]
     public async Task UpdateUserAsync_UserUpdated_ReturnsTaskOfBoolean()
     {
         //Arrange
@@ -207,4 +240,6 @@ public class UserServiceTests
         //Assert
         Assert.That(actualResult, Is.True);
     }
+
+    
 }
